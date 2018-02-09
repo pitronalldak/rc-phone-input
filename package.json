@@ -1,0 +1,73 @@
+{
+  "name": "rc-phone-input",
+  "version": "0.0.1",
+  "description": "React component for entering telephone numbers with Ip lookup",
+  "main": "build/rcPhoneInput.js",
+  "modules": "build/rcPhoneInput.js",
+  "files": [
+    "css"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "webpack-dev-server",
+    "lint": "tslint -c tslint.json 'src/**/*.ts' 'src/**/*.tsx'",
+    "test": "jest",
+    "test:coverage": "jest --no-cache --coverage",
+    "test:watch": "jest --watch"
+  },
+  "jest": {
+    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.(ts|tsx)"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pitronalldak/rc-phone-input"
+  },
+  "keywords": [
+    "rc-phone-component",
+    "react-component",
+    "react-phone-input",
+    "react-phone-number-input", 
+    "react-telephone-input",
+    "react-tel-input",
+    "international-telephone-input",
+    "react"
+  ],
+  "author": "pitronalldak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pitronalldak/rc-phone-input/issues"
+  },
+  "homepage": "https://github.com/pitronalldak/rc-phone-input",
+  "dependencies": {
+    "@types/react": "^16.0.36",
+    "@types/react-dom": "^16.0.3",
+    "classnames": "^2.2.5",
+    "country-telephone-data": "^0.5.4",
+    "fetch-jsonp": "^1.1.3",
+    "lodash": "^4.17.5",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-onclickoutside": "^6.7.1",
+    "typescript": "^2.7.1"
+  },
+  "devDependencies": {
+    "@types/enzyme": "^3.1.8",
+    "awesome-typescript-loader": "^3.4.1",
+    "chai": "^4.1.2",
+    "dirty-chai": "^2.0.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "jest": "^22.2.1",
+    "source-map-loader": "^0.2.3",
+    "ts-jest": "^22.0.3",
+    "tslint": "^5.9.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
+  }
+}
