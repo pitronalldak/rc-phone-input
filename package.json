@@ -1,6 +1,6 @@
 {
   "name": "rc-phone-input",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "React component for entering telephone numbers with Ip lookup",
   "main": "lib/rcPhoneInput.js",
   "modules": "lib/rcPhoneInput.js",
@@ -16,7 +16,11 @@
     "test:watch": "jest --watch"
   },
   "jest": {
-    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
@@ -32,7 +36,7 @@
     "rc-phone-component",
     "react-component",
     "react-phone-input",
-    "react-phone-number-input", 
+    "react-phone-number-input",
     "react-telephone-input",
     "react-tel-input",
     "international-telephone-input",
