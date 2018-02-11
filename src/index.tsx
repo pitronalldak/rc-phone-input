@@ -292,6 +292,10 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   private guessSelectedCountry = (inputNumber: string): ICountry => {
     const { defaultCountry, onlyCountries } = this.props
 
+    if (this.state && this.state.selectedCountry) {
+      return this.state.selectedCountry
+    }
+
     const secondBestGuess = allCountries.find(country =>
       country.iso2 === defaultCountry) || onlyCountries[0]
 
@@ -333,10 +337,6 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         { dialCode: '', priority: 10001, iso2: '' }
     )} else {
       return secondBestGuess
-    }
-
-    if (this.state && this.state.selectedCountry) {
-      return this.state.selectedCountry
     }
 
     if (!bestGuess.name) {
