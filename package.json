@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:webpack": "webpack",
     "dev": "webpack-dev-server",
     "lint": "tslint -c tslint.json 'src/**/*.ts' 'src/**/*.tsx'",
     "test": "jest",

@@ -2,20 +2,17 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import RCPhoneNumber from '../src'
 
-class App extends React.Component<any, any> {
-
-  state = { value: undefined }
-
-  render(): JSX.Element {
-    return <div style={{width: '25%'}}>
-      <RCPhoneNumber
-        onChange={e => console.log(e)}
-        onBlur={e => console.log(e)}
-        value={this.state.value}
-        withIpLookup
-      />
-    </div>
-  }
-}
+const App: React.SFC<any> = (): JSX.Element => (
+  <div style={{width: '25%'}}>
+    <p>With initial value</p>
+    <RCPhoneNumber value="+79107409656" />
+    <br />
+    <p>With prefered contries</p>
+    <RCPhoneNumber preferredCountries={['in', 'us', 'uk']} />
+    <br />
+    <p>With Ip-lookup</p>
+    <RCPhoneNumber withIpLookup />
+  </div>
+)
 
 ReactDOM.render(<App />, document.getElementById('app'))
