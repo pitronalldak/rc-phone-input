@@ -95,7 +95,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   }
 
   public componentDidMount(): void {
-    const { onlyCountries, withIpLookup } = this.props
+    const { onlyCountries, withIpLookup, onChange } = this.props
 
     if (withIpLookup) {
       fetchJsonp('https://ipinfo.io')
@@ -105,6 +105,10 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         const highlightCountryIndex = allCountries.findIndex(item => item === selectedCountry)
 
         if (selectedCountry && highlightCountryIndex) {
+          if (typeof onChange === 'function') {
+            onChange(this.getFullNumber('', selectedCountry))
+          }
+
           this.setState({
             selectedCountry,
             highlightCountryIndex
