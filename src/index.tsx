@@ -293,15 +293,17 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
   private guessSelectedCountry = (inputNumber: string): ICountry => {
     const { defaultCountry, onlyCountries } = this.props
+    const { selectedCountry } = this.state
 
     const secondBestGuess = allCountries.find(country =>
       country.iso2 === defaultCountry) || onlyCountries[0]
+
     const inputNumberForCountries = inputNumber.substr(0, 4)
 
     let bestGuess
     if (inputNumber.trim() !== '') {
       bestGuess = onlyCountries.reduce(
-        (selectedCountry, country) => {
+        (selCountry, country) => {
           if (
             allCountryCodes[inputNumberForCountries] &&
             allCountryCodes[inputNumberForCountries][0] === country.iso2
@@ -311,29 +313,33 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
             allCountryCodes[inputNumberForCountries] &&
             allCountryCodes[inputNumberForCountries][0] === selectedCountry.iso2
           ) {
-            return selectedCountry
+            return selCountry
           } else {
             if (inputNumber.startsWith(country.dialCode)) {
               if (
                 country.dialCode.length >
-                selectedCountry.dialCode.length
+                selCountry.dialCode.length
               ) {
                 return country
               }
               if (
                 country.dialCode.length ===
-                selectedCountry.dialCode.length &&
-                country.priority < selectedCountry.priority
+                selCountry.dialCode.length &&
+                country.priority < selCountry.priority
               ) {
                 return country
               }
             }
           }
-          return selectedCountry
+          return selCountry
         },
         { dialCode: '', priority: 10001, iso2: '' }
     )} else {
       return secondBestGuess
+    }
+
+    if (selectedCountry) {
+      return selectedCountry
     }
 
     if (!bestGuess.name) {
