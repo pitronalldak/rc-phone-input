@@ -95,7 +95,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   }
 
   public componentDidMount(): void {
-    const { onlyCountries, withIpLookup, onChange } = this.props
+    const { onlyCountries, withIpLookup } = this.props
 
     if (withIpLookup) {
       fetchJsonp('https://ipinfo.io')
@@ -105,15 +105,9 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         const highlightCountryIndex = allCountries.findIndex(item => item === selectedCountry)
 
         if (selectedCountry && highlightCountryIndex) {
-          const formattedNumber = formatNumber('', this.getNumberFormat(selectedCountry))
-          if (typeof onChange === 'function') {
-            onChange({ number: formattedNumber, country: selectedCountry })
-          }
-
           this.setState({
             selectedCountry,
-            highlightCountryIndex,
-            formattedNumber
+            highlightCountryIndex
           })
         }
       })
@@ -293,7 +287,6 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
   private guessSelectedCountry = (inputNumber: string): ICountry => {
     const { defaultCountry, onlyCountries } = this.props
-    const { selectedCountry } = this.state
 
     const secondBestGuess = allCountries.find(country =>
       country.iso2 === defaultCountry) || onlyCountries[0]
@@ -311,7 +304,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
             return country
           } else if (
             allCountryCodes[inputNumberForCountries] &&
-            allCountryCodes[inputNumberForCountries][0] === selectedCountry.iso2
+            allCountryCodes[inputNumberForCountries][0] === selCountry.iso2
           ) {
             return selCountry
           } else {
@@ -338,8 +331,8 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       return secondBestGuess
     }
 
-    if (selectedCountry) {
-      return selectedCountry
+    if (this.state && this.state.selectedCountry) {
+      return this.state.selectedCountry
     }
 
     if (!bestGuess.name) {
@@ -351,6 +344,10 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
   private getElement(index: number): any {
     return this.refs[`flag_no_${index}`]
+  }
+
+  private getFullNumber(formattedNumber: string, selectedCountry: ICountry): string {
+    return formatNumber(selectedCountry.dialCode + formattedNumber.replace(/\D/g, ''), selectedCountry.format)
   }
 
   private handleFlagDropdownClick = (event: any): void => {
@@ -408,13 +405,11 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     this.setState({
         formattedNumber: nextFormattedNumber,
         freezeSelection: nextFreezeSelection
-      },
-      () => {
-        if (typeof onChange === 'function') {
-          onChange({ number: nextFormattedNumber, country: selectedCountry })
-        }
-      }
-    )
+    })
+
+    if (typeof onChange === 'function') {
+      onChange(this.getFullNumber(nextFormattedNumber, selectedCountry))
+    }
   }
 
   private handleInputClick = (): void => {
@@ -442,11 +437,12 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
           if (this.numberInputRef) {
             this.numberInputRef.focus()
           }
-          if (typeof onChange === 'function') {
-            onChange({ number: formattedNumber, country: nextSelectedCountry })
-          }
         }
       )
+
+      if (typeof onChange === 'function') {
+        onChange(this.getFullNumber(nextFormattedNumber, nextSelectedCountry))
+      }
     } else {
       this.setState({ isShowDropDown: false })
     }
@@ -658,7 +654,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
     const dashedLi: JSX.Element = <li key={'dashes'} className="divider" />
     if (preferredCountries.length) {
-      countryDropDownList.splice(preferredCountries.length, 0, dashedLi)      
+      countryDropDownList.splice(preferredCountries.length, 0, dashedLi)
     }
 
     const dropDownClasses: string = classNames({
@@ -677,10 +673,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     const { onBlur } = this.props
     const { formattedNumber, selectedCountry } = this.state
     if (typeof onBlur === 'function') {
-      onBlur({
-        number: formattedNumber,
-        country: selectedCountry
-      })
+      onBlur(this.getFullNumber(formattedNumber, selectedCountry))
     }
   }
 }

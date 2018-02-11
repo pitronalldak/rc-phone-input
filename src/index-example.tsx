@@ -9,8 +9,8 @@ class App extends React.Component<any, any> {
   render(): JSX.Element {
     return <div style={{width: '25%'}}>
       <RCPhoneNumber
-        onChange={e => this.setState({ value: '+' + e.country.dialCode + e.number })}
-        onBlur={e => this.setState({ value: '+' + e.country.dialCode + e.number })}
+        onChange={e => console.log(e)}
+        onBlur={e => console.log(e)}
         value={this.state.value}
         withIpLookup
       />
