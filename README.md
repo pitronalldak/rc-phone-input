@@ -9,7 +9,7 @@ International phone number `<input/>` in React with Ip-lookup
 
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/pitronalldak/rc-phone-input/master/docs/images/Screen-Shot.png" width="279" height="156"/>
+<img src="https://raw.githubusercontent.com/pitronalldak/rc-phone-input/master/docs/images/Screen-Shot.png" width="740" height="512"/>
 
 ## Installation
 
