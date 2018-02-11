@@ -2,8 +2,8 @@
   "name": "rc-phone-input",
   "version": "0.0.1",
   "description": "React component for entering telephone numbers with Ip lookup",
-  "main": "build/rcPhoneInput.js",
-  "modules": "build/rcPhoneInput.js",
+  "main": "lib/rcPhoneInput.js",
+  "modules": "lib/rcPhoneInput.js",
   "files": [
     "css"
   ],
