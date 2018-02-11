@@ -1,5 +1,5 @@
 module.exports = {
-  entry: "./src/index.tsx",
+  entry: "./src/index-example.tsx",
   output: {
       filename: "bundle.js",
       publicPath: '/dist/',

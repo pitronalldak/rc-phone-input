@@ -95,7 +95,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   }
 
   public componentDidMount(): void {
-    const { onlyCountries, withIpLookup } = this.props
+    const { onlyCountries, withIpLookup, onChange } = this.props
 
     if (withIpLookup) {
       fetchJsonp('https://ipinfo.io')
@@ -105,9 +105,15 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         const highlightCountryIndex = allCountries.findIndex(item => item === selectedCountry)
 
         if (selectedCountry && highlightCountryIndex) {
+          const formattedNumber = formatNumber('', this.getNumberFormat(selectedCountry))
+          if (typeof onChange === 'function') {
+            onChange({ number: formattedNumber, country: selectedCountry })
+          }
+
           this.setState({
             selectedCountry,
-            highlightCountryIndex
+            highlightCountryIndex,
+            formattedNumber
           })
         }
       })
@@ -645,7 +651,9 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     })
 
     const dashedLi: JSX.Element = <li key={'dashes'} className="divider" />
-    countryDropDownList.splice(preferredCountries.length, 0, dashedLi)
+    if (preferredCountries.length) {
+      countryDropDownList.splice(preferredCountries.length, 0, dashedLi)      
+    }
 
     const dropDownClasses: string = classNames({
       'country-list': true,
