@@ -5,7 +5,8 @@
   "main": "lib",
   "modules": "lib",
   "files": [
-    "css"
+    "css",
+    "lib"
   ],
   "scripts": {
     "build": "tsc",
