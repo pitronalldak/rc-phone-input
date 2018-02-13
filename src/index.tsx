@@ -403,13 +403,35 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       this.getNumberFormat(selectedCountry)
     )
 
-    const caretPosition = event.target.selectionStart
+    let caretPosition = event.target.selectionStart
     const diff = nextFormattedNumber.length - formattedNumber.length
 
     this.setState({
         formattedNumber: nextFormattedNumber,
         freezeSelection: nextFreezeSelection
-    })
+      },
+      () => {
+        if (caretPosition === 1 && formattedNumber.length === 2) {
+          caretPosition++
+        }
+
+        if (diff > 0) {
+          caretPosition = caretPosition - diff
+        }
+
+        if (
+          caretPosition > 0 &&
+          formattedNumber.length >= nextFormattedNumber.length
+        ) {
+          if (this.numberInputRef) {
+            this.numberInputRef.setSelectionRange(
+              caretPosition,
+              caretPosition
+            )
+          }
+        }
+      }
+    )
 
     if (typeof onChange === 'function') {
       onChange(this.getFullNumber(nextFormattedNumber, selectedCountry))
@@ -609,8 +631,18 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     if (placeholder) {
       return placeholder
     }
-
-    return this.getNumberFormat(country).replace(/\./gi, '1')
+    const format = this.getNumberFormat(country)
+    let nextPlaceholder = ''
+    let count = 0
+    for (let i = 0; i < format.length; i++) {
+      if(format[i] === '.') {
+        nextPlaceholder += count.toString()
+        count ++
+      } else {
+        nextPlaceholder += format[i]
+      }
+    }
+    return 'eg ' + nextPlaceholder
   }
 
   private getCountryDropDownList = (): JSX.Element => {
