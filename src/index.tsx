@@ -467,7 +467,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       )
 
       if (typeof onChange === 'function') {
-        onChange({country: nextFormattedNumber, phone: nextSelectedCountry})
+        onChange({country: nextSelectedCountry, phone: nextFormattedNumber })
       }
     } else {
       this.setState({ isShowDropDown: false })
