@@ -633,7 +633,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     }
     const format = this.getNumberFormat(country)
     let nextPlaceholder = ''
-    let count = 0
+    let count = 1
     for (let i = 0; i < format.length; i++) {
       if(format[i] === '.') {
         nextPlaceholder += count.toString()
