@@ -106,7 +106,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
         if (selectedCountry && highlightCountryIndex) {
           if (typeof onChange === 'function') {
-            onChange(this.getFullNumber('', selectedCountry))
+            onChange({country: selectedCountry, phone: ''})
           }
 
           this.setState({
@@ -434,7 +434,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     )
 
     if (typeof onChange === 'function') {
-      onChange(this.getFullNumber(nextFormattedNumber, selectedCountry))
+      onChange({country: selectedCountry, phone: nextFormattedNumber})
     }
   }
 
@@ -467,7 +467,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       )
 
       if (typeof onChange === 'function') {
-        onChange(this.getFullNumber(nextFormattedNumber, nextSelectedCountry))
+        onChange({country: nextFormattedNumber, phone: nextSelectedCountry})
       }
     } else {
       this.setState({ isShowDropDown: false })
@@ -709,7 +709,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     const { onBlur } = this.props
     const { formattedNumber, selectedCountry } = this.state
     if (typeof onBlur === 'function') {
-      onBlur(this.getFullNumber(formattedNumber, selectedCountry))
+      onBlur({ number: formattedNumber, country: selectedCountry })
     }
   }
 }
