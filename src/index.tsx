@@ -642,7 +642,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         nextPlaceholder += format[i]
       }
     }
-    return 'eg ' + nextPlaceholder
+    return 'e.g: ' + nextPlaceholder
   }
 
   private getCountryDropDownList = (): JSX.Element => {
