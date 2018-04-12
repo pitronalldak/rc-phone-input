@@ -82,29 +82,27 @@ describe('react telephone input', () => {
     expect(wrapper2.find('input').prop('autoComplete')).to.equal('off')
   })
 
-  fit('should guess selected country', () => {
-    rti = TestUtils.renderIntoDocument(
-      React.createElement(RCPhoneInput, {})
-    )
+  // fit('should guess selected country', () => {
+  //   rti = TestUtils.renderIntoDocument(
+  //     React.createElement(RCPhoneInput, {})
+  //   )
 
-    // console.log(rti.guessSelectedCountry('4915784846968'))
+  //   expect(rti.guessSelectedCountry('').iso2).to.equal(allCountries[0].iso2)
 
-    // expect(rti.guessSelectedCountry('').iso2).to.equal(allCountries[0].iso2)
+  //   expect(rti.guessSelectedCountry('12').iso2).to.equal('us')
+  //   expect(rti.guessSelectedCountry('12112121').iso2).to.equal('us')
+  //   expect(rti.guessSelectedCountry('913212121').iso2).to.equal('in')
+  //   expect(rti.guessSelectedCountry('237').iso2).to.equal('cm')
+  //   expect(rti.guessSelectedCountry('599').iso2).to.equal('cw')
+  //   expect(rti.guessSelectedCountry('590').iso2).to.equal('gp')
+  //   expect(rti.guessSelectedCountry('1403').iso2).to.equal('ca')
+  //   expect(rti.guessSelectedCountry('18005').iso2).to.equal('us')
+  //   expect(rti.guessSelectedCountry('1809').iso2).to.equal('do')
 
-    // expect(rti.guessSelectedCountry('12').iso2).to.equal('us')
-    // expect(rti.guessSelectedCountry('12112121').iso2).to.equal('us')
-    // expect(rti.guessSelectedCountry('913212121').iso2).to.equal('in')
-    // expect(rti.guessSelectedCountry('237').iso2).to.equal('cm')
-    // expect(rti.guessSelectedCountry('599').iso2).to.equal('cw')
-    // expect(rti.guessSelectedCountry('590').iso2).to.equal('gp')
-    // expect(rti.guessSelectedCountry('1403').iso2).to.equal('ca')
-    // expect(rti.guessSelectedCountry('18005').iso2).to.equal('us')
-    // expect(rti.guessSelectedCountry('1809').iso2).to.equal('do')
-
-    // expect(rti.guessSelectedCountry('59').iso2).to.equal(
-    //   allCountries[0].iso2
-    // )
-  })
+  //   expect(rti.guessSelectedCountry('59').iso2).to.equal(
+  //     allCountries[0].iso2
+  //   )
+  // })
 
   it('should set the correct highlightCountryIndex', () => {
     const afghanistan = {
