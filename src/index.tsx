@@ -292,9 +292,12 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   private guessSelectedCountry = (inputNumber: string): ICountry => {
     const { defaultCountry, onlyCountries } = this.props
 
+    console.log('>>>>>>', inputNumber, this.state && this.state.selectedCountry)
     if (this.state && this.state.selectedCountry) {
       return this.state.selectedCountry
     }
+
+    console.log('<<<<<')
 
     const secondBestGuess = allCountries.find(country =>
       country.iso2 === defaultCountry) || onlyCountries[0]
@@ -347,7 +350,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   }
 
   private getElement(index: number): any {
-    return this.refs[`flag_no_${index}`]
+    return this[`flag_no_${index}`]
   }
 
   private getFullNumber(formattedNumber: string, selectedCountry: ICountry): string {
@@ -635,7 +638,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     let nextPlaceholder = ''
     let count = 1
     for (let i = 0; i < format.length; i++) {
-      if(format[i] === '.') {
+      if (format[i] === '.') {
         nextPlaceholder += count.toString()
         count ++
       } else {
@@ -666,7 +669,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
       return (
         <li
-          ref={`flag_no_${index}`}
+          ref={el => {this[`flag_no_${index}`] = el}}
           key={`flag_no_${index}`}
           data-flag-key={`flag_no_${index}`}
           className={itemClasses}
