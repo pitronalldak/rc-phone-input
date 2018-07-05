@@ -288,7 +288,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     const secondBestGuess = allCountries.find(country =>
       country.iso2 === defaultCountry) || onlyCountries[0]
 
-    const inputNumberForCountries = inputNumber.substr(0, 4)
+      const inputNumberForCountries = inputNumber.substr(0, 4)
 
     let bestGuess
     if (inputNumber.trim() !== '') {
@@ -305,7 +305,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
           ) {
             return selCountry
           } else {
-            if (inputNumber.startsWith(country.dialCode)) {
+            if (inputNumber.startsWith('+' + country.dialCode)) {
               if (
                 country.dialCode.length >
                 selCountry.dialCode.length
@@ -327,7 +327,6 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     )} else {
       return secondBestGuess
     }
-
     if (!bestGuess.name) {
       return secondBestGuess
     }
