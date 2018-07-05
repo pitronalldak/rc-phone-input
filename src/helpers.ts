@@ -1,38 +1,24 @@
-interface IFormattedObject {
-  formattedText: string
-  remainingText: string[]
+import * as libphonenumber from 'google-libphonenumber'
+
+const { PhoneNumberUtil, PhoneNumberFormat } = libphonenumber
+const phoneUtil = PhoneNumberUtil.getInstance()
+export interface ICountry {
+  name: string
+  iso2: string
+  format: string
+  dialCode: string
+  priority: number
 }
 
-export function removeCountryCode(country: any, number: string): string {
-  return number.replace(/\D/g, '').replace(`${country.dialCode}`, '')
-}
-
-export const formatNumber = (text: string, pattern: string): string => {
-  if (!text || text.length === 0) {
-    return ''
+export const validateNumber = (country: ICountry, number: string) => {
+  try {
+    const phone = phoneUtil.parse(number, country.iso2.toUpperCase())
+    const isValid = phoneUtil.isValidNumberForRegion(phone, country.iso2.toUpperCase())
+    if (isValid) {
+      return phoneUtil.format(phone, PhoneNumberFormat.E164)
+    }
+    return undefined
+  } catch (e) {
+    return undefined
   }
-
-  const formattedObject: IFormattedObject = pattern.split('').reduce(
-    (acc, character) => {
-      if (acc.remainingText.length === 0) {
-        return acc
-      }
-
-      if (character !== '.') {
-        return {
-          formattedText: acc.formattedText + character,
-          remainingText: acc.remainingText
-        }
-      }
-
-      return {
-        formattedText: acc.formattedText + acc.remainingText[0],
-        remainingText: acc.remainingText.slice(1, acc.remainingText.length)
-      }
-    },
-    { formattedText: '', remainingText: text.split('') }
-  )
-  return (
-    formattedObject.formattedText + formattedObject.remainingText.join('')
-  )
 }
