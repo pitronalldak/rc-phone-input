@@ -12,16 +12,16 @@ import * as Adapter from 'enzyme-adapter-react-16'
 
 import * as TestUtils from 'react-dom/test-utils'
 import * as countryData from 'country-telephone-data'
-import { RCPhoneInput } from '../src/rcPhoneInput'
-import { formatNumber } from '../src/helpers'
+import { RCPhoneInput } from '../src'
+import { validateNumber } from '../src/helpers'
 
 Enzyme.configure({ adapter: new Adapter() })
 
 const { allCountries } = countryData
 let rti
 
-describe('react telephone input', function() {
-  afterEach(function() {
+describe('react telephone input', () => {
+  afterEach(() => {
     if (rti) {
       ReactDOM.unmountComponentAtNode(
         ReactDOM.findDOMNode(rti).parentNode
@@ -85,7 +85,7 @@ describe('react telephone input', function() {
     rti = TestUtils.renderIntoDocument(
       React.createElement(RCPhoneInput, {})
     )
-
+    rti.state.selectedCountry = undefined
     expect(rti.guessSelectedCountry('').iso2).to.equal(allCountries[0].iso2)
 
     expect(rti.guessSelectedCountry('12').iso2).to.equal('us')
@@ -131,8 +131,8 @@ describe('react telephone input', function() {
         })
     )
 
-    let fakeEvent = {
-        preventDefault: () => {}
+    const fakeEvent = {
+      preventDefault: () => {}
     }
 
     rti.handleFlagItemClick(algeria)
@@ -156,7 +156,7 @@ describe('react telephone input', function() {
     }
 
     rti = TestUtils.renderIntoDocument(
-        React.createElement(RCPhoneInput, { onFocus })
+      React.createElement(RCPhoneInput, { onFocus })
     )
     expect(rti).to.be.defined
 
@@ -171,67 +171,41 @@ describe('react telephone input', function() {
     }
 
     rti = TestUtils.renderIntoDocument(
-        React.createElement(RCPhoneInput, { onBlur })
+      React.createElement(RCPhoneInput, { onBlur })
     )
     expect(rti).to.be.defined
 
     TestUtils.Simulate.blur(rti.numberInputRef)
   })
 
-  it('should re-render with correct phone number once value prop changed', () => {
-    const wrapper = shallow(<RCPhoneInput value="+12313123132" />)
-    expect(wrapper.state('formattedNumber')).to.equal('(231) 312-3132')
-    wrapper.setProps({ value: '+12313123133' })
-    expect(wrapper.state('formattedNumber')).to.equal('(231) 312-3133')
-  })
-
   it('should re-render as empty once value prop becomes null', () => {
-    const wrapper = shallow(
-        <RCPhoneInput defaultCountry="us" value="+12313123132" />
+    const component = mount(
+      <RCPhoneInput value="+12313123132" />
     )
-    expect(wrapper.state('formattedNumber')).to.equal('(231) 312-3132')
-    wrapper.setProps({ value: null })
-    expect(wrapper.state('formattedNumber')).to.equal('')
+    expect(component.state('formattedNumber')).to.equal('+12313123132')
+    component.number = '+12313123132'
+    component.setProps({ value: '123' })
+    expect(component.state('formattedNumber')).to.be.undefined()
   })
 
 
-  describe('format number', () => {
-    it('should format number with just dial code', () => {
-      let country = allCountries.find(country => country.iso2 === 'in')
-      let number = '91'
-      let expectedFormattedNumber = '+91'
+  describe('validate number', () => {
+    it('should format number', () => {
+      const country = allCountries.find(country => country.iso2 === 'ru')
+      const number = '(915) 287 - 19 - 06'
+      const expectedFormattedNumber = '+79152871906'
 
-      expect(formatNumber(number, country.format)).to.equal(
-          expectedFormattedNumber
+      expect(validateNumber(country, number)).to.equal(
+        expectedFormattedNumber
       )
     })
 
-    it('simple format - should format number with dial code and some other numeric text', () => {
-      let country = allCountries.find(country => country.iso2 === 'in')
-      let number = '9187124'
-      let expectedFormattedNumber = '+91 87124'
+    it('should return undefined in number invalid', () => {
+      const country = allCountries.find(country => country.iso2 === 'ru')
+      const number = '888152871906'
+      const expectedFormattedNumber = '+79152871906'
 
-      expect(formatNumber(number, country.format)).to.equal(
-          expectedFormattedNumber
-      )
-    })
-
-    it('complex format - should format number with dashes in them', () => {
-      let country = allCountries.find(country => country.iso2 === 'us')
-      let number = '187124'
-      let expectedFormattedNumber = '+1 (871) 24'
-      let formattedNumber = formatNumber(number, country.format)
-
-      expect(formattedNumber).to.equal(expectedFormattedNumber)
-    })
-
-    it('should format number correctly at the boundary of brackets', () => {
-      let country = allCountries.find(country => country.iso2 === 'us')
-      let number = '1871'
-      let expectedFormattedNumber = '+1 (871'
-      let formattedNumber = formatNumber(number, country.format)
-
-      expect(formattedNumber).to.equal(expectedFormattedNumber)
+      expect(validateNumber(country, number)).to.be.undefined()
     })
   })
 })

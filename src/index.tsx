@@ -6,20 +6,12 @@ import * as React from 'react'
 import onClickOutside from 'react-onclickoutside'
 
 import { Keys } from './enums'
-import { formatNumber, removeCountryCode } from './helpers'
+import { ICountry, validateNumber } from './helpers'
 
 const { allCountries, iso2Lookup, allCountryCodes }  = countryData
 
 const FLAG_WIDTH: number = 16
 const FLAG_HEIGHT: number = 11
-
-interface ICountry {
-  name: string
-  iso2: string
-  format: string
-  dialCode: string
-  priority: number
-}
 
 interface IProps {
   value?: string
@@ -48,7 +40,8 @@ interface IState {
   selectedCountry: ICountry
   highlightCountry?: ICountry
   highlightCountryIndex: number
-  formattedNumber: string
+  formattedNumber?: string
+  number: string
   isShowDropDown: boolean
   freezeSelection: boolean
   queryString: string
@@ -58,7 +51,8 @@ interface IState {
 interface IPartialState {
   selectedCountry: ICountry
   highlightCountryIndex: number
-  formattedNumber: string
+  formattedNumber?: string
+  number: string
 }
 
 export class RCPhoneInput extends React.Component<IProps, IState> {
@@ -88,13 +82,14 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       preferredCountries: nextPreferredCountries,
       isShowDropDown: false,
       queryString: '',
+      number: '',
       freezeSelection: false,
       debouncedQueryStingSearcher: () => window.setTimeout(this.searchCountry, 300),
       ...this.mapPropsToState(this.props)
     }
   }
 
-  public componentDidMount(): void {
+  public componentDidMount() {
     const { onlyCountries, withIpLookup, onChange } = this.props
 
     if (withIpLookup) {
@@ -120,26 +115,28 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     document.addEventListener('keydown', this.handleKeydown)
   }
 
-  public componentWillReceiveProps(nextProps: IProps): void {
-    this.setState(this.mapPropsToState(nextProps))
+  public componentDidUpdate(prevProps, prevState) {
+    const { value } = this.props
+    if (prevProps.value !== value && this.state.formattedNumber !== value) {
+      const formattedNumber = validateNumber(this.state.selectedCountry, value!)
+      this.setState({
+        number: value!,
+        formattedNumber
+      })
+    }
   }
 
   public componentWillUnmount(): void {
     document.removeEventListener('keydown', this.handleKeydown)
   }
 
-  public shouldComponentUpdate(nextProps: IProps, nextState): boolean {
-    return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state)
-  }
-
-  public render(): JSX.Element {
+  public render() {
     const {
       isValid, inputProps, inputId,
       className, autoComplete, required,
-      disabled, flagsImagePath
+      disabled, flagsImagePath, placeholder
     } = this.props
-    const { formattedNumber, isShowDropDown, selectedCountry } = this.state
-
+    const { number, isShowDropDown, selectedCountry } = this.state
     const arrowClasses: string = classNames({
       arrow: true,
       up: isShowDropDown
@@ -147,12 +144,12 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
     const inputClasses: string = classNames({
       'form-control': true,
-      'invalid-number': typeof isValid === 'function' && !isValid(formattedNumber.replace(/\D/g, ''))
+      'invalid-number': typeof isValid === 'function' && !isValid(number)
     })
 
     const flagViewClasses: string = classNames({
-        'flag-dropdown': true,
-        'open-dropdown': isShowDropDown
+      'flag-dropdown': true,
+      'open-dropdown': isShowDropDown
     })
 
     const inputFlagClasses: string = `flag ${selectedCountry.iso2}`
@@ -180,13 +177,13 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
           onFocus={this.handleInputFocus}
           onBlur={this.handleInputBlur}
           onKeyDown={this.handleInputKeyDown}
-          value={formattedNumber}
+          value={number}
           ref={el => {this.numberInputRef = el}}
           type="tel"
           className={inputClasses}
           autoComplete={autoComplete}
           required={required}
-          placeholder={this.getCountryPlaceholder(selectedCountry)}
+          placeholder={placeholder}
           disabled={disabled}
           {...otherProps}
         />
@@ -213,41 +210,33 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       </div>
     )}
 
-  private mapPropsToState = (props, firstCall?): IPartialState => {
-    let inputNumber: string = ''
-    let selectedCountryGuess: ICountry = this.guessSelectedCountry(inputNumber.replace(/\D/g, ''))
+  private mapPropsToState = (props): IPartialState => {
+    let number: string = ''
+    let formattedNumber: string | undefined
+    let selectedCountryGuess: ICountry = this.guessSelectedCountry(number)
 
     if (props.value) {
-      selectedCountryGuess = this.guessSelectedCountry(props.value.replace(/\D/g, ''))
+      selectedCountryGuess = this.guessSelectedCountry(props.value)
       if (selectedCountryGuess) {
-        inputNumber = removeCountryCode(selectedCountryGuess, props.value)
-      }
-    } else if (props.initialValue && firstCall) {
-      selectedCountryGuess = this.guessSelectedCountry(props.initialValue.replace(/\D/g, ''))
-      if (selectedCountryGuess) {
-        inputNumber = removeCountryCode(selectedCountryGuess, props.initialValue)
+        number = props.value
+        formattedNumber = props.value
       }
     } else if (this.props.value) {
-        inputNumber = ''
+        number = ''
     } else if (
       this.state &&
-      this.state.formattedNumber &&
-      this.state.formattedNumber.length > 0
+      this.state.formattedNumber
     ) {
-      inputNumber = this.state.formattedNumber
+      number = this.state.formattedNumber
     }
 
     const selectedCountryGuessIndex = allCountries.findIndex(item => item === selectedCountryGuess)
 
-    const formattedNumber = formatNumber(
-      inputNumber.replace(/\D/g, ''),
-      this.getNumberFormat(selectedCountryGuess)
-    )
-
     return {
       selectedCountry: selectedCountryGuess,
       highlightCountryIndex: selectedCountryGuessIndex,
-      formattedNumber
+      formattedNumber,
+      number
     }
   }
 
@@ -347,11 +336,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   }
 
   private getElement(index: number): any {
-    return this.refs[`flag_no_${index}`]
-  }
-
-  private getFullNumber(formattedNumber: string, selectedCountry: ICountry): string {
-    return formatNumber(selectedCountry.dialCode + formattedNumber.replace(/\D/g, ''), selectedCountry.format)
+    return this[`flag_no_${index}`]
   }
 
   private handleFlagDropdownClick = (event: any): void => {
@@ -379,10 +364,9 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
   private handleInput = (event: any): void => {
     const { onChange } = this.props
-    const { selectedCountry, freezeSelection, formattedNumber } = this.state
+    const { selectedCountry, freezeSelection, number } = this.state
     let nextFreezeSelection = freezeSelection
-
-    if (event.target.value === formattedNumber) {
+    if (event.target.value === number) {
       return
     }
 
@@ -392,50 +376,19 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       event.returnValue = false
     }
 
-    const inputNumber = event.target.value.replace(/\D/g, '')
-
-    if (inputNumber && !freezeSelection) {
+    if (event.target.value && !freezeSelection) {
       nextFreezeSelection = false
     }
 
-    const nextFormattedNumber = formatNumber(
-      inputNumber,
-      this.getNumberFormat(selectedCountry)
-    )
-
-    let caretPosition = event.target.selectionStart
-    const diff = nextFormattedNumber.length - formattedNumber.length
+    const formattedNumber = validateNumber(selectedCountry, event.target.value)
 
     this.setState({
-        formattedNumber: nextFormattedNumber,
-        freezeSelection: nextFreezeSelection
-      },
-      () => {
-        if (caretPosition === 1 && formattedNumber.length === 2) {
-          caretPosition++
-        }
+      formattedNumber,
+      number: event.target.value,
+      freezeSelection: nextFreezeSelection
+    })
 
-        if (diff > 0) {
-          caretPosition = caretPosition - diff
-        }
-
-        if (
-          caretPosition > 0 &&
-          formattedNumber.length >= nextFormattedNumber.length
-        ) {
-          if (this.numberInputRef) {
-            this.numberInputRef.setSelectionRange(
-              caretPosition,
-              caretPosition
-            )
-          }
-        }
-      }
-    )
-
-    if (typeof onChange === 'function') {
-      onChange({country: selectedCountry, number: nextFormattedNumber})
-    }
+    this.handleChange({ country: selectedCountry, number, formattedNumber })
   }
 
   private handleInputClick = (): void => {
@@ -444,18 +397,15 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
   private handleFlagItemClick = (country: ICountry, event?: MouseEvent): any => {
     const { onlyCountries, onChange } = this.props
-    const { selectedCountry, formattedNumber } = this.state
+    const { selectedCountry, number } = this.state
     const nextSelectedCountry = onlyCountries.find(item => item.iso2 === country.iso2)
 
     if (nextSelectedCountry && selectedCountry.iso2 !== nextSelectedCountry.iso2) {
-      const nextFormattedNumber = formatNumber(
-        formattedNumber.replace(/\D/g, ''),
-        this.getNumberFormat(nextSelectedCountry)
-      )
+      const formattedNumber = validateNumber(nextSelectedCountry, number)
 
       this.setState({
-          formattedNumber: nextFormattedNumber,
           isShowDropDown: false,
+          formattedNumber,
           selectedCountry: nextSelectedCountry,
           freezeSelection: true
         },
@@ -466,9 +416,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         }
       )
 
-      if (typeof onChange === 'function') {
-        onChange({ country: nextSelectedCountry, number: nextFormattedNumber })
-      }
+      this.handleChange({ country: selectedCountry, formattedNumber })
     } else {
       this.setState({ isShowDropDown: false })
     }
@@ -476,20 +424,10 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
   private handleInputFocus = (): void => {
     const { onFocus } = this.props
-    const { formattedNumber, selectedCountry} = this.state
+    const { formattedNumber, number, selectedCountry} = this.state
 
     if (typeof onFocus === 'function') {
-      onFocus({number: formattedNumber, country: selectedCountry})
-    }
-
-    this.fillDialCode()
-  }
-
-  private fillDialCode(): void {
-    const { selectedCountry } = this.state
-
-    if (this.numberInputRef && this.numberInputRef.value === '+') {
-      this.setState({formattedNumber: '+' + selectedCountry.dialCode})
+      onFocus({number, formattedNumber, country: selectedCountry})
     }
   }
 
@@ -625,26 +563,6 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     return nextPlaceholder.join('').trim()
   }
 
-  private getCountryPlaceholder = (country: ICountry): string => {
-    const { placeholder } = this.props
-
-    if (placeholder) {
-      return placeholder
-    }
-    const format = this.getNumberFormat(country)
-    let nextPlaceholder = ''
-    let count = 1
-    for (let i = 0; i < format.length; i++) {
-      if(format[i] === '.') {
-        nextPlaceholder += count.toString()
-        count ++
-      } else {
-        nextPlaceholder += format[i]
-      }
-    }
-    return 'e.g: ' + nextPlaceholder
-  }
-
   private getCountryDropDownList = (): JSX.Element => {
     const { flagsImagePath, onlyCountries } = this.props
     const { preferredCountries, highlightCountryIndex } = this.state
@@ -666,7 +584,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
       return (
         <li
-          ref={`flag_no_${index}`}
+          ref={el => {this[`flag_no_${index}`] = el}}
           key={`flag_no_${index}`}
           data-flag-key={`flag_no_${index}`}
           className={itemClasses}
@@ -705,11 +623,19 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     )
   }
 
-  private handleInputBlur = (): void => {
+  private handleInputBlur = () => {
     const { onBlur } = this.props
-    const { formattedNumber, selectedCountry } = this.state
+    const { number, formattedNumber, selectedCountry } = this.state
     if (typeof onBlur === 'function') {
-      onBlur({ number: formattedNumber, country: selectedCountry })
+      onBlur({ number, formattedNumber, country: selectedCountry })
+    }
+  }
+
+  private handleChange = (args: { country?: ICountry, number?: string, formattedNumber?: string } ) => {
+    const { onlyCountries, onChange } = this.props
+    const { selectedCountry, number, formattedNumber } = this.state
+    if (typeof onChange === 'function') {
+      onChange({ country: selectedCountry, number, formattedNumber, ... args })
     }
   }
 }
