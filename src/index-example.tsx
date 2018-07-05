@@ -4,14 +4,15 @@ import RCPhoneNumber from '../src'
 
 class App extends React.Component<any, any> {
 
-  state = { value: undefined }
+  public state = { value: undefined }
 
-  render(): JSX.Element {
+  public render(): JSX.Element {
     return <div style={{width: '25%'}}>
       <RCPhoneNumber
         onChange={e => console.log(e)}
         onBlur={e => console.log(e)}
         value={this.state.value}
+        placeholder="Phone"
         withIpLookup
       />
     </div>
