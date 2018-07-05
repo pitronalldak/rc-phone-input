@@ -366,7 +366,8 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     const { onChange } = this.props
     const { selectedCountry, freezeSelection, number } = this.state
     let nextFreezeSelection = freezeSelection
-    if (event.target.value === number) {
+    const nextNumber = event.target.value
+    if (nextNumber === number) {
       return
     }
 
@@ -376,19 +377,19 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       event.returnValue = false
     }
 
-    if (event.target.value && !freezeSelection) {
+    if (nextNumber && !freezeSelection) {
       nextFreezeSelection = false
     }
 
-    const formattedNumber = validateNumber(selectedCountry, event.target.value)
+    const formattedNumber = validateNumber(selectedCountry, nextNumber)
 
     this.setState({
       formattedNumber,
-      number: event.target.value,
+      number: nextNumber,
       freezeSelection: nextFreezeSelection
     })
 
-    this.handleChange({ country: selectedCountry, number, formattedNumber })
+    this.handleChange({ country: selectedCountry, number: nextNumber, formattedNumber })
   }
 
   private handleInputClick = (): void => {
