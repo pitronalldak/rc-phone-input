@@ -11,7 +11,7 @@ const App: React.SFC<any> = (): JSX.Element => (
     <RCPhoneNumber preferredCountries={['in', 'us', 'uk']} />
     <br />
     <p>With Ip-lookup</p>
-    <RCPhoneNumber withIpLookup />
+    <RCPhoneNumber withIpLookup placeholder="Phone" onChange={e => console.log(e)} />
   </div>
 )
 
