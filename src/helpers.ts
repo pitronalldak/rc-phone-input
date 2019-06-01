@@ -1,4 +1,4 @@
-import { parsePhoneNumber } from 'libphonenumber-js'
+import { parsePhoneNumber, CountryCode } from 'libphonenumber-js'
 
 export interface ICountry {
   name: string
@@ -10,8 +10,10 @@ export interface ICountry {
 
 export const validateNumber = (country: ICountry, number: string) => {
   try {
-    const phoneNumber = parsePhoneNumber(number)
-
+    const phoneNumber = parsePhoneNumber(
+      number,
+      country.iso2.toUpperCase() as CountryCode
+    )
     if (
       phoneNumber &&
       phoneNumber.isValid() &&

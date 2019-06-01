@@ -10,6 +10,14 @@ describe('utils', () => {
       expect(validateNumber({ iso2 }, phoneNumber)).toEqual(validPhoneNumber)
     })
 
+    it('validates polish phone number without area code', () => {
+      const iso2 = 'pl'
+      const phoneNumber = '503 433 543'
+      const validPhoneNumber = '+48503433543'
+
+      expect(validateNumber({ iso2 }, phoneNumber)).toEqual(validPhoneNumber)
+    })
+
     it('validates swiss phone number', () => {
       const iso2 = 'ch'
       const phoneNumber = '+41 (0) 78 733 93 91'
@@ -18,9 +26,25 @@ describe('utils', () => {
       expect(validateNumber({ iso2 }, phoneNumber)).toEqual(validPhoneNumber)
     })
 
+    it('validates swiss phone number without area code', () => {
+      const iso2 = 'ch'
+      const phoneNumber = '78 733 93 91'
+      const validPhoneNumber = '+41787339391'
+
+      expect(validateNumber({ iso2 }, phoneNumber)).toEqual(validPhoneNumber)
+    })
+
     it('validates german phone number', () => {
       const iso2 = 'de'
       const phoneNumber = '+49 0 30 20649197'
+      const validPhoneNumber = '+493020649197'
+
+      expect(validateNumber({ iso2 }, phoneNumber)).toEqual(validPhoneNumber)
+    })
+
+    it('validates german phone number without area code', () => {
+      const iso2 = 'de'
+      const phoneNumber = '0 30 20649197'
       const validPhoneNumber = '+493020649197'
 
       expect(validateNumber({ iso2 }, phoneNumber)).toEqual(validPhoneNumber)
