@@ -1,7 +1,5 @@
-import * as libphonenumber from 'google-libphonenumber'
+import { parsePhoneNumber } from 'libphonenumber-js'
 
-const { PhoneNumberUtil, PhoneNumberFormat } = libphonenumber
-const phoneUtil = PhoneNumberUtil.getInstance()
 export interface ICountry {
   name: string
   iso2: string
@@ -12,11 +10,16 @@ export interface ICountry {
 
 export const validateNumber = (country: ICountry, number: string) => {
   try {
-    const phone = phoneUtil.parse(number, country.iso2.toUpperCase())
-    const isValid = phoneUtil.isValidNumberForRegion(phone, country.iso2.toUpperCase())
-    if (isValid) {
-      return phoneUtil.format(phone, PhoneNumberFormat.E164)
+    const phoneNumber = parsePhoneNumber(number)
+
+    if (
+      phoneNumber &&
+      phoneNumber.isValid() &&
+      phoneNumber.country === country.iso2.toUpperCase()
+    ) {
+      return phoneNumber.format('E.164')
     }
+
     return undefined
   } catch (e) {
     return undefined

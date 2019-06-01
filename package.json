@@ -52,7 +52,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "country-telephone-data": "^0.5.4",
-    "google-libphonenumber": "^3.1.8",
+    "libphonenumber-js": "^1.7.18",
     "react-onclickoutside": "^6.7.1"
   },
   "devDependencies": {
