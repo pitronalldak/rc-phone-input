@@ -1,7 +1,7 @@
 {
-  "name": "rc-phone-input",
+  "name": "@join-com/rc-phone-input",
   "version": "1.0.17",
-  "description": "React component for entering telephone numbers with Ip lookup",
+  "description": "React component for entering telephone numbers",
   "main": "lib",
   "modules": "lib",
   "files": [
@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pitronalldak/rc-phone-input"
+    "url": "https://github.com/join-com/rc-phone-input"
   },
   "keywords": [
     "rc-phone-component",
@@ -46,9 +46,9 @@
   "author": "pitronalldak",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pitronalldak/rc-phone-input/issues"
+    "url": "https://github.com/join-com/rc-phone-input/issues"
   },
-  "homepage": "https://github.com/pitronalldak/rc-phone-input",
+  "homepage": "https://github.com/join-com/rc-phone-input",
   "dependencies": {
     "classnames": "^2.2.5",
     "country-telephone-data": "^0.5.4",
