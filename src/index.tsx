@@ -1,7 +1,5 @@
 import * as classNames from 'classnames'
 import * as countryData from 'country-telephone-data'
-import * as fetchJsonp from 'fetch-jsonp'
-import { isEqual } from 'lodash'
 import * as React from 'react'
 import onClickOutside from 'react-onclickoutside'
 
@@ -32,7 +30,7 @@ interface IProps {
   flagsImagePath?: string
   autoComplete?: string
   placeholder?: string
-  withIpLookup?: boolean
+  countryCode?: string
 }
 
 interface IState {
@@ -90,26 +88,22 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   }
 
   public componentDidMount() {
-    const { onlyCountries, withIpLookup, onChange } = this.props
+    const { onlyCountries, countryCode, onChange } = this.props
 
-    if (withIpLookup) {
-      fetchJsonp('https://ipinfo.io')
-      .then(response => response.json())
-      .then(json => {
-        const selectedCountry = onlyCountries.find(country => country.iso2 === json.country.toLowerCase())
-        const highlightCountryIndex = allCountries.findIndex(item => item === selectedCountry)
+    if (countryCode) {
+      const selectedCountry = onlyCountries.find(country => country.iso2 === countryCode.toLowerCase())
+      const highlightCountryIndex = allCountries.findIndex(item => item === selectedCountry)
 
-        if (selectedCountry && highlightCountryIndex) {
-          if (typeof onChange === 'function') {
-            onChange({country: selectedCountry, number: ''})
-          }
-
-          this.setState({
-            selectedCountry,
-            highlightCountryIndex
-          })
+      if (selectedCountry && highlightCountryIndex) {
+        if (typeof onChange === 'function') {
+          onChange({country: selectedCountry, number: ''})
         }
-      })
+
+        this.setState({
+          selectedCountry,
+          highlightCountryIndex
+        })
+      }
     }
 
     document.addEventListener('keydown', this.handleKeydown)
