@@ -88,9 +88,9 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   }
 
   public componentDidMount() {
-    const { onlyCountries, countryCode, onChange } = this.props
+    const { onlyCountries, countryCode, onChange, value } = this.props
 
-    if (countryCode) {
+    if (!value && countryCode) {
       const selectedCountry = onlyCountries.find(country => country.iso2 === countryCode.toLowerCase())
       const highlightCountryIndex = allCountries.findIndex(item => item === selectedCountry)
 
@@ -212,7 +212,11 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     if (props.value) {
       selectedCountryGuess = this.guessSelectedCountry(props.value)
       if (selectedCountryGuess) {
-        number = props.value
+        if (props.value.startsWith('+' + selectedCountryGuess.dialCode)) {
+          number = props.value.split(selectedCountryGuess.dialCode)[1]
+        } else {
+          number = props.value
+        }
         formattedNumber = props.value
       }
     } else if (this.props.value) {
