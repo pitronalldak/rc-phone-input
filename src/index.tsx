@@ -6,7 +6,7 @@ import onClickOutside from 'react-onclickoutside'
 import { Keys } from './enums'
 import { ICountry, validateNumber } from './helpers'
 
-const { allCountries, iso2Lookup, allCountryCodes }  = countryData
+const { allCountries, iso2Lookup, allCountryCodes } = countryData
 
 const FLAG_WIDTH: number = 16
 const FLAG_HEIGHT: number = 11
@@ -26,7 +26,7 @@ interface IProps {
   onFocus?: (event: any) => void
   disabled: boolean
   required: boolean
-  inputProps: {id?: string}
+  inputProps: { id?: string }
   flagsImagePath?: string
   autoComplete?: string
   placeholder?: string
@@ -73,8 +73,11 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     super(props)
     const { preferredCountries } = this.props
 
-    const nextPreferredCountries = preferredCountries.filter(iso2 => iso2Lookup.hasOwnProperty(iso2))
-      .map(iso2 => iso2Lookup.hasOwnProperty(iso2) ? allCountries[iso2Lookup[iso2]] : null)
+    const nextPreferredCountries = preferredCountries
+      .filter(iso2 => iso2Lookup.hasOwnProperty(iso2))
+      .map(iso2 =>
+        iso2Lookup.hasOwnProperty(iso2) ? allCountries[iso2Lookup[iso2]] : null
+      )
 
     this.state = {
       preferredCountries: nextPreferredCountries,
@@ -82,7 +85,8 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       queryString: '',
       number: '',
       freezeSelection: false,
-      debouncedQueryStingSearcher: () => window.setTimeout(this.searchCountry, 300),
+      debouncedQueryStingSearcher: () =>
+        window.setTimeout(this.searchCountry, 300),
       ...this.mapPropsToState(this.props)
     }
   }
@@ -91,12 +95,16 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     const { onlyCountries, countryCode, onChange, value } = this.props
 
     if (!value && countryCode) {
-      const selectedCountry = onlyCountries.find(country => country.iso2 === countryCode.toLowerCase())
-      const highlightCountryIndex = allCountries.findIndex(item => item === selectedCountry)
+      const selectedCountry = onlyCountries.find(
+        country => country.iso2 === countryCode.toLowerCase()
+      )
+      const highlightCountryIndex = allCountries.findIndex(
+        item => item === selectedCountry
+      )
 
       if (selectedCountry && highlightCountryIndex) {
         if (typeof onChange === 'function') {
-          onChange({country: selectedCountry, number: ''})
+          onChange({ country: selectedCountry, number: '' })
         }
 
         this.setState({
@@ -126,9 +134,15 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
   public render() {
     const {
-      isValid, inputProps, inputId,
-      className, autoComplete, required,
-      disabled, flagsImagePath, placeholder
+      isValid,
+      inputProps,
+      inputId,
+      className,
+      autoComplete,
+      required,
+      disabled,
+      flagsImagePath,
+      placeholder
     } = this.props
     const { number, isShowDropDown, selectedCountry } = this.state
     const arrowClasses: string = classNames({
@@ -159,12 +173,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     }
 
     return (
-      <div
-        className={classNames(
-          'rc-phone-input',
-          className
-        )}
-      >
+      <div className={classNames('rc-phone-input', className)}>
         <input
           onChange={this.handleInput}
           onClick={this.handleInputClick}
@@ -172,7 +181,9 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
           onBlur={this.handleInputBlur}
           onKeyDown={this.handleInputKeyDown}
           value={number}
-          ref={el => {this.numberInputRef = el}}
+          ref={el => {
+            this.numberInputRef = el
+          }}
           type="tel"
           className={inputClasses}
           autoComplete={autoComplete}
@@ -182,27 +193,29 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
           {...otherProps}
         />
         <div
-          ref={el => {this.flagDropDownButtonRef = el}}
+          ref={el => {
+            this.flagDropDownButtonRef = el
+          }}
           className={flagViewClasses}
           onKeyDown={this.handleKeydown}
         >
           <div
-            ref={el => {this.selectedFlagRef = el}}
+            ref={el => {
+              this.selectedFlagRef = el
+            }}
             onClick={this.handleFlagDropdownClick}
             className="selected-flag"
             title={`${selectedCountry.name}: + ${selectedCountry.dialCode}`}
           >
-            <div
-              className={inputFlagClasses}
-              style={inputFlagStyles}
-            >
+            <div className={inputFlagClasses} style={inputFlagStyles}>
               <div className={arrowClasses} />
             </div>
           </div>
           {isShowDropDown ? this.getCountryDropDownList() : ''}
         </div>
       </div>
-    )}
+    )
+  }
 
   private mapPropsToState = (props): IPartialState => {
     let number: string = ''
@@ -220,15 +233,14 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         formattedNumber = props.value
       }
     } else if (this.props.value) {
-        number = ''
-    } else if (
-      this.state &&
-      this.state.formattedNumber
-    ) {
+      number = ''
+    } else if (this.state && this.state.formattedNumber) {
       number = this.state.formattedNumber
     }
 
-    const selectedCountryGuessIndex = allCountries.findIndex(item => item === selectedCountryGuess)
+    const selectedCountryGuessIndex = allCountries.findIndex(
+      item => item === selectedCountryGuess
+    )
 
     return {
       selectedCountry: selectedCountryGuess,
@@ -283,10 +295,11 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       return this.state.selectedCountry
     }
 
-    const secondBestGuess = allCountries.find(country =>
-      country.iso2 === defaultCountry) || onlyCountries[0]
+    const secondBestGuess =
+      allCountries.find(country => country.iso2 === defaultCountry) ||
+      onlyCountries[0]
 
-      const inputNumberForCountries = inputNumber.substr(0, 4)
+    const inputNumberForCountries = inputNumber.substr(0, 4)
 
     let bestGuess
     if (inputNumber.trim() !== '') {
@@ -304,15 +317,11 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
             return selCountry
           } else {
             if (inputNumber.startsWith('+' + country.dialCode)) {
-              if (
-                country.dialCode.length >
-                selCountry.dialCode.length
-              ) {
+              if (country.dialCode.length > selCountry.dialCode.length) {
                 return country
               }
               if (
-                country.dialCode.length ===
-                selCountry.dialCode.length &&
+                country.dialCode.length === selCountry.dialCode.length &&
                 country.priority < selCountry.priority
               ) {
                 return country
@@ -322,7 +331,8 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
           return selCountry
         },
         { dialCode: '', priority: 10001, iso2: '' }
-    )} else {
+      )
+    } else {
       return secondBestGuess
     }
     if (!bestGuess.name) {
@@ -339,7 +349,9 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   private handleFlagDropdownClick = (event: any): void => {
     const { disabled, onlyCountries } = this.props
     const {
-      isShowDropDown, selectedCountry, preferredCountries,
+      isShowDropDown,
+      selectedCountry,
+      preferredCountries,
       highlightCountryIndex
     } = this.state
 
@@ -348,15 +360,23 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     }
     event.preventDefault()
 
-    this.setState({
-      isShowDropDown: !isShowDropDown,
-      highlightCountry: onlyCountries.find(country => country.iso2 === selectedCountry.iso2),
-      highlightCountryIndex: preferredCountries.concat(onlyCountries)
-        .findIndex(country => country.iso2 === selectedCountry.iso2)
-    },
-    () => {
-      this.scrollTo(this.getElement(highlightCountryIndex + preferredCountries.length), true)
-    })
+    this.setState(
+      {
+        isShowDropDown: !isShowDropDown,
+        highlightCountry: onlyCountries.find(
+          country => country.iso2 === selectedCountry.iso2
+        ),
+        highlightCountryIndex: preferredCountries
+          .concat(onlyCountries)
+          .findIndex(country => country.iso2 === selectedCountry.iso2)
+      },
+      () => {
+        this.scrollTo(
+          this.getElement(highlightCountryIndex + preferredCountries.length),
+          true
+        )
+      }
+    )
   }
 
   private handleInput = (event: any): void => {
@@ -386,22 +406,35 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
       freezeSelection: nextFreezeSelection
     })
 
-    this.handleChange({ country: selectedCountry, number: nextNumber, formattedNumber })
+    this.handleChange({
+      country: selectedCountry,
+      number: nextNumber,
+      formattedNumber
+    })
   }
 
   private handleInputClick = (): void => {
     this.setState({ isShowDropDown: false })
   }
 
-  private handleFlagItemClick = (country: ICountry, event?: MouseEvent): any => {
+  private handleFlagItemClick = (
+    country: ICountry,
+    event?: MouseEvent
+  ): any => {
     const { onlyCountries, onChange } = this.props
     const { selectedCountry, number } = this.state
-    const nextSelectedCountry = onlyCountries.find(item => item.iso2 === country.iso2)
+    const nextSelectedCountry = onlyCountries.find(
+      item => item.iso2 === country.iso2
+    )
 
-    if (nextSelectedCountry && selectedCountry.iso2 !== nextSelectedCountry.iso2) {
+    if (
+      nextSelectedCountry &&
+      selectedCountry.iso2 !== nextSelectedCountry.iso2
+    ) {
       const formattedNumber = validateNumber(nextSelectedCountry, number)
 
-      this.setState({
+      this.setState(
+        {
           isShowDropDown: false,
           formattedNumber,
           selectedCountry: nextSelectedCountry,
@@ -422,10 +455,10 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
   private handleInputFocus = (): void => {
     const { onFocus } = this.props
-    const { formattedNumber, number, selectedCountry} = this.state
+    const { formattedNumber, number, selectedCountry } = this.state
 
     if (typeof onFocus === 'function') {
-      onFocus({number, formattedNumber, country: selectedCountry})
+      onFocus({ number, formattedNumber, country: selectedCountry })
     }
   }
 
@@ -435,8 +468,11 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
     const nextIndex = highlightCountryIndex + direction
 
-    if (nextIndex < 0 || nextIndex >= onlyCountries.length + preferredCountries.length) {
-        return nextIndex - direction
+    if (
+      nextIndex < 0 ||
+      nextIndex >= onlyCountries.length + preferredCountries.length
+    ) {
+      return nextIndex - direction
     }
 
     return nextIndex
@@ -447,23 +483,29 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     const { queryString, preferredCountries } = this.state
 
     const probableCountries = onlyCountries.filter(country =>
-      country.name.toLowerCase().startsWith(queryString.toLowerCase()))
+      country.name.toLowerCase().startsWith(queryString.toLowerCase())
+    )
 
     const probableCandidate = probableCountries[0] || onlyCountries[0]
-    const probableCandidateIndex = onlyCountries.findIndex(item => item === probableCandidate) + preferredCountries.length
+    const probableCandidateIndex =
+      onlyCountries.findIndex(item => item === probableCandidate) +
+      preferredCountries.length
 
     this.scrollTo(this.getElement(probableCandidateIndex), true)
 
     this.setState({
-        queryString: '',
-        highlightCountryIndex: probableCandidateIndex
+      queryString: '',
+      highlightCountryIndex: probableCandidateIndex
     })
   }
 
   private handleKeydown = (event: any): void => {
     const {
-      isShowDropDown, highlightCountryIndex,
-      preferredCountries, queryString, debouncedQueryStingSearcher
+      isShowDropDown,
+      highlightCountryIndex,
+      preferredCountries,
+      queryString,
+      debouncedQueryStingSearcher
     } = this.state
     const { onlyCountries } = this.props
 
@@ -472,16 +514,19 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     }
 
     if (event.preventDefault) {
-        event.preventDefault()
+      event.preventDefault()
     } else {
-        event.returnValue = false
+      event.returnValue = false
     }
 
     const moveHighlight = (direction: number): void => {
-      this.setState({
+      this.setState(
+        {
           highlightCountryIndex: this.getHighlightCountryIndex(direction)
         },
-        () => {this.scrollTo(this.getElement(highlightCountryIndex), true)}
+        () => {
+          this.scrollTo(this.getElement(highlightCountryIndex), true)
+        }
       )
     }
 
@@ -502,10 +547,16 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         this.setState({ isShowDropDown: false })
         break
       default:
-        if ((event.which >= Keys.A && event.which <= Keys.Z) || event.which === Keys.SPACE) {
-          this.setState({
-            queryString: queryString + String.fromCharCode(event.which)
-          }, debouncedQueryStingSearcher)
+        if (
+          (event.which >= Keys.A && event.which <= Keys.Z) ||
+          event.which === Keys.SPACE
+        ) {
+          this.setState(
+            {
+              queryString: queryString + String.fromCharCode(event.which)
+            },
+            debouncedQueryStingSearcher
+          )
         }
     }
   }
@@ -543,7 +594,7 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         nextPlaceholder[index] = ''
       }
 
-      if (nextPlaceholder[index] === '\.') {
+      if (nextPlaceholder[index] === '.') {
         count++
         nextPlaceholder[index] = ''
       }
@@ -552,7 +603,10 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
         break
       }
     }
-    nextPlaceholder = nextPlaceholder.join('').trim().split('')
+    nextPlaceholder = nextPlaceholder
+      .join('')
+      .trim()
+      .split('')
 
     if (nextPlaceholder[0] === '-' || nextPlaceholder[0] === ')') {
       nextPlaceholder.shift()
@@ -565,44 +619,42 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     const { flagsImagePath, onlyCountries } = this.props
     const { preferredCountries, highlightCountryIndex } = this.state
 
-    const countryDropDownList: JSX.Element[] = preferredCountries.concat(onlyCountries)
-    .map((country, index) => {
-      const itemClasses = classNames({
-        country: true,
-        preferred: preferredCountries.some(item => item.iso2 === country.iso2),
-        highlight: highlightCountryIndex === index
+    const countryDropDownList: JSX.Element[] = preferredCountries
+      .concat(onlyCountries)
+      .map((country, index) => {
+        const itemClasses = classNames({
+          country: true,
+          preferred: preferredCountries.some(
+            item => item.iso2 === country.iso2
+          ),
+          highlight: highlightCountryIndex === index
+        })
+
+        const inputFlagClasses = `flag ${country.iso2}`
+        const inputFlagStyles = {
+          width: FLAG_WIDTH,
+          height: FLAG_HEIGHT,
+          backgroundImage: `url(${flagsImagePath})`
+        }
+
+        return (
+          <li
+            ref={el => {
+              this[`flag_no_${index}`] = el
+            }}
+            key={`flag_no_${index}`}
+            data-flag-key={`flag_no_${index}`}
+            className={itemClasses}
+            data-dial-code="1"
+            data-country-code={country.iso2}
+            onClick={() => this.handleFlagItemClick(country)}
+          >
+            <div className={inputFlagClasses} style={inputFlagStyles} />
+            <span className="country-name">{country.name}</span>
+            <span className="dial-code">{'+' + country.dialCode}</span>
+          </li>
+        )
       })
-
-      const inputFlagClasses = `flag ${country.iso2}`
-      const inputFlagStyles = {
-        width: FLAG_WIDTH,
-        height: FLAG_HEIGHT,
-        backgroundImage: `url(${flagsImagePath})`
-      }
-
-      return (
-        <li
-          ref={el => {this[`flag_no_${index}`] = el}}
-          key={`flag_no_${index}`}
-          data-flag-key={`flag_no_${index}`}
-          className={itemClasses}
-          data-dial-code="1"
-          data-country-code={country.iso2}
-          onClick={() => this.handleFlagItemClick(country)}
-        >
-          <div
-            className={inputFlagClasses}
-            style={inputFlagStyles}
-          />
-          <span className="country-name">
-            {country.name}
-          </span>
-          <span className="dial-code">
-            {'+' + country.dialCode}
-          </span>
-        </li>
-      )
-    })
 
     const dashedLi: JSX.Element = <li key={'dashes'} className="divider" />
     if (preferredCountries.length) {
@@ -611,11 +663,16 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
 
     const dropDownClasses: string = classNames({
       'country-list': true,
-      'hide': !this.state.isShowDropDown
+      hide: !this.state.isShowDropDown
     })
 
     return (
-      <ul ref={el => {this.flagDropdownListRef = el}} className={dropDownClasses}>
+      <ul
+        ref={el => {
+          this.flagDropdownListRef = el
+        }}
+        className={dropDownClasses}
+      >
         {countryDropDownList}
       </ul>
     )
@@ -629,11 +686,15 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
     }
   }
 
-  private handleChange = (args: { country?: ICountry, number?: string, formattedNumber?: string } ) => {
+  private handleChange = (args: {
+    country?: ICountry
+    number?: string
+    formattedNumber?: string
+  }) => {
     const { onlyCountries, onChange } = this.props
     const { selectedCountry, number, formattedNumber } = this.state
     if (typeof onChange === 'function') {
-      onChange({ country: selectedCountry, number, formattedNumber, ... args })
+      onChange({ country: selectedCountry, number, formattedNumber, ...args })
     }
   }
 }
