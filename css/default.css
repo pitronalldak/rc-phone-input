@@ -708,7 +708,7 @@
 .rc-phone-input input[type=text],
 .rc-phone-input input[type=tel] {
   border: 1px solid #dce4e7;
-  border-radius: 2px;
+  border-radius: 6px;
   font-weight: 400;
   font-size: 14px;
   line-height: 18px;
