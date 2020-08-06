@@ -1,5 +1,3 @@
-import { parsePhoneNumber, CountryCode } from 'libphonenumber-js'
-
 export interface ICountry {
   name: string
   iso2: string
@@ -8,22 +6,36 @@ export interface ICountry {
   priority: number
 }
 
-export const validateNumber = (country: ICountry, number: string) => {
-  try {
-    const phoneNumber = parsePhoneNumber(
-      number,
-      country.iso2.toUpperCase() as CountryCode
-    )
-    if (
-      phoneNumber &&
-      phoneNumber.isValid() &&
-      phoneNumber.country === country.iso2.toUpperCase()
-    ) {
-      return phoneNumber.format('E.164')
-    }
-
-    return undefined
-  } catch (e) {
-    return undefined
+const resolvePhoneNumber = (country: ICountry, input: string) => {
+  if (input.length < 4) {
+    return
   }
+
+  const cleanNumber = input.replace(/[^\d+]/g, '')
+  if (!cleanNumber) {
+    return
+  }
+
+  if (cleanNumber.length < 8) {
+    return
+  }
+
+  if (input[0] === '+') {
+    return cleanNumber
+  }
+
+  return `+${country.dialCode}${cleanNumber}`
+}
+
+const isPhoneNumberValid = (phoneNumber?: string | null) =>
+  new RegExp(/^[+]*([-\s\./0-9]*)+$/).test(`${phoneNumber || ''}`)
+
+export const validateNumber = (country: ICountry, input: string) => {
+  const phoneNumber = resolvePhoneNumber(country, input)
+
+  if (phoneNumber && isPhoneNumberValid(phoneNumber)) {
+    return phoneNumber
+  }
+
+  return undefined
 }

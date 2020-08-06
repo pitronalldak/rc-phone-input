@@ -208,8 +208,8 @@ describe('react telephone input', () => {
 
     it('should return undefined in number invalid', () => {
       const country = allCountries.find(country => country.iso2 === 'ru')
-      const number = '888152871906'
       const expectedFormattedNumber = '+79152871906'
+      const number = '8881528'
 
       expect(validateNumber(country, number)).to.be.undefined()
     })

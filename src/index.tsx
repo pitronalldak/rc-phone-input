@@ -380,7 +380,6 @@ export class RCPhoneInput extends React.Component<IProps, IState> {
   }
 
   private handleInput = (event: any): void => {
-    const { onChange } = this.props
     const { selectedCountry, freezeSelection, number } = this.state
     let nextFreezeSelection = freezeSelection
     const nextNumber = event.target.value
